@@ -1,12 +1,16 @@
 export const setupRoomHandlers = (io, socket, rooms) => {
-  socket.on('join_room', ({ roomId }) => {
+  socket.on('join_room', ({ roomId, prefs }) => {
     socket.join(roomId);
     
     if (!rooms.has(roomId)) {
       rooms.set(roomId, {
         users: new Set(),
-        swipes: {}
+        swipes: {},
+        prefs: prefs || { services: '', genres: '' }
       });
+    } else if (prefs && (prefs.services || prefs.genres)) {
+      // If the host joins slightly later or re-joins, update the room prefs
+      rooms.get(roomId).prefs = prefs;
     }
 
     const room = rooms.get(roomId);
@@ -17,6 +21,8 @@ export const setupRoomHandlers = (io, socket, rooms) => {
 
     console.log(`Socket ${socket.id} joined room ${roomId}. Users in room: ${room.users.size}`);
 
+    // Send the room's stored preferences to the user who just joined
+    socket.emit('room_prefs', room.prefs);
 
     if (room.users.size >= 2) {
       io.to(roomId).emit('room_ready', {

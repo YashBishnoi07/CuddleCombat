@@ -12,11 +12,19 @@ export const useSocket = (roomId) => {
     const onConnect = () => {
       setIsConnected(true);
       if (roomId) {
-        socket.emit('join_room', { roomId });
+        const prefsStr = localStorage.getItem(`prefs_${roomId}`);
+        const prefs = prefsStr ? JSON.parse(prefsStr) : null;
+        socket.emit('join_room', { roomId, prefs });
       }
     };
 
     const onDisconnect = () => setIsConnected(false);
+
+    const onRoomPrefs = (prefs) => {
+      if (prefs) {
+        localStorage.setItem(`prefs_${roomId}`, JSON.stringify(prefs));
+      }
+    };
 
     const onRoomReady = (data) => {
       setPartnerConnected(true);
@@ -32,6 +40,7 @@ export const useSocket = (roomId) => {
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
+    socket.on('room_prefs', onRoomPrefs);
     socket.on('room_ready', onRoomReady);
     socket.on('match', onMatch);
     socket.on('partner_left', onPartnerLeft);
@@ -39,6 +48,7 @@ export const useSocket = (roomId) => {
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
+      socket.off('room_prefs', onRoomPrefs);
       socket.off('room_ready', onRoomReady);
       socket.off('match', onMatch);
       socket.off('partner_left', onPartnerLeft);
