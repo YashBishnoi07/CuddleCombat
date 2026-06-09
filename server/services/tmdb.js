@@ -79,7 +79,7 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
   try {
     const httpsAgent = new https.Agent({ family: 4 });
     
-    // Fetch both movies and webseries (TV) concurrently
+
     const [movieRes, tvRes] = await Promise.allSettled([
       axios.get(movieUrl, { params, timeout: 5000, httpsAgent }),
       axios.get(tvUrl, { params, timeout: 5000, httpsAgent })
@@ -94,13 +94,13 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
     if (tvRes.status === 'fulfilled' && tvRes.value.data.results) {
       const tvShows = tvRes.value.data.results.map(tv => ({
         ...tv,
-        title: tv.name, // Normalize tv 'name' to movie 'title'
-        release_date: tv.first_air_date // Normalize air date to release date
+        title: tv.name,
+        release_date: tv.first_air_date
       }));
       combinedResults = [...combinedResults, ...tvShows];
     }
     
-    // Shuffle the combined array so movies and TV shows are interleaved naturally
+
     combinedResults.sort(() => Math.random() - 0.5);
 
     if (combinedResults.length > 0) {
@@ -110,7 +110,7 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
          console.warn('TMDB returned empty results on page 1, using mock data.');
          return { results: MOCK_MOVIES };
        } else {
-         // Properly return empty array if we've exhausted the genre/platform to prevent infinite loops
+
          return { results: [] };
        }
     }

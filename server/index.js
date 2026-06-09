@@ -15,7 +15,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors({ origin: '*' })); // Allow all for prototype
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const io = new Server(server, {
@@ -25,8 +25,7 @@ const io = new Server(server, {
   }
 });
 
-// Centralized room state
-// Structure: { roomId: { users: Set([socketId1, socketId2]), swipes: { socketId1: Set([movieId]), socketId2: Set([movieId]) } } }
+
 const rooms = new Map();
 
 io.on('connection', (socket) => {
@@ -38,7 +37,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Proxy route for TMDB
+
 app.get('/api/movies', async (req, res) => {
   try {
     const { services, genres, page } = req.query;

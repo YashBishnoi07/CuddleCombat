@@ -25,9 +25,9 @@ html, body {
   font-family: var(--font-ui);
   height: 100%;
   width: 100%;
-  overflow: hidden; /* App feels native */
-  overscroll-behavior-y: contain; /* Prevent pull to refresh */
-  touch-action: none; /* Prevent native touch lag */
+  overflow: hidden;
+  overscroll-behavior-y: contain;
+  touch-action: none;
 }
 
 #root {

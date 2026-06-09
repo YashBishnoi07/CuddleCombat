@@ -17,7 +17,7 @@ export const setupRoomHandlers = (io, socket, rooms) => {
 
     console.log(`Socket ${socket.id} joined room ${roomId}. Users in room: ${room.users.size}`);
 
-    // If there are 2 users, we can emit a 'room_ready' event
+
     if (room.users.size >= 2) {
       io.to(roomId).emit('room_ready', {
         message: 'Partner connected!'
@@ -48,7 +48,7 @@ export const setupRoomHandlers = (io, socket, rooms) => {
   });
 
   socket.on('swipe_left', ({ roomId, movieId }) => {
-    // Analytical tracking could go here
+
   });
   
   socket.on('disconnecting', () => {

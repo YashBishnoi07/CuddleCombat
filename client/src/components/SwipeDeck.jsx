@@ -54,7 +54,7 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected }) => {
             
             const style = {
               scale: 1 - (depth * 0.05),
-              y: depth * 25, // Using pixels for smooth spring interpolation
+              y: depth * 25,
               zIndex: 10 - depth
             };
 

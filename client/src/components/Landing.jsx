@@ -15,7 +15,7 @@ const Landing = () => {
       <div className={styles.content}>
         <div className={styles.logo}>
           <span className={styles.icon}>🥂💖</span>
-          <h1 className={styles.title}>CouchConsensus</h1>
+          <h1 className={styles.title}>CuddleCombat</h1>
         </div>
         <p className={styles.tagline}>Stop scrolling. Start watching.</p>
         
