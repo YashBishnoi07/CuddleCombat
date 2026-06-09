@@ -69,10 +69,7 @@ export const setupRoomHandlers = (io, socket, rooms) => {
     room.vetoes[socket.id] = true;
 
     // Broadcast the dramatic veto to the partner
-    const otherUsers = Array.from(room.users).filter(id => id !== socket.id);
-    if (otherUsers.length > 0) {
-      io.to(otherUsers[0]).emit('partner_veto');
-    }
+    socket.to(roomId).emit('partner_veto');
   });
   
   socket.on('disconnecting', () => {
