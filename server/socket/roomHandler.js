@@ -58,7 +58,7 @@ export const setupRoomHandlers = (io, socket, rooms) => {
 
   });
 
-  socket.on('swipe_veto', ({ roomId }) => {
+  socket.on('swipe_veto', ({ roomId, movieId }) => {
     const room = rooms.get(roomId);
     if (!room) return;
 
@@ -68,8 +68,13 @@ export const setupRoomHandlers = (io, socket, rooms) => {
     // Mark as used
     room.vetoes[socket.id] = true;
 
-    // Broadcast the dramatic veto to the partner
-    socket.to(roomId).emit('partner_veto');
+    // Broadcast the trap card to the partner
+    socket.to(roomId).emit('partner_vetoed_movie', { movieId });
+  });
+  
+  socket.on('send_veto_reaction', ({ roomId }) => {
+    // Broadcast revenge reaction back to the partner
+    socket.to(roomId).emit('partner_veto_reaction');
   });
   
   socket.on('disconnecting', () => {

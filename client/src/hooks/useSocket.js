@@ -5,7 +5,8 @@ export const useSocket = (roomId) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [partnerConnected, setPartnerConnected] = useState(false);
   const [matchData, setMatchData] = useState(null);
-  const [partnerVetoTrigger, setPartnerVetoTrigger] = useState(0);
+  const [vetoedMovieId, setVetoedMovieId] = useState(null);
+  const [partnerVetoReactionTrigger, setPartnerVetoReactionTrigger] = useState(0);
 
   useEffect(() => {
     socket.connect();
@@ -39,8 +40,12 @@ export const useSocket = (roomId) => {
       setPartnerConnected(false);
     };
 
-    const onPartnerVeto = () => {
-      setPartnerVetoTrigger(Date.now());
+    const onPartnerVetoedMovie = ({ movieId }) => {
+      setVetoedMovieId(movieId);
+    };
+
+    const onPartnerVetoReaction = () => {
+      setPartnerVetoReactionTrigger(Date.now());
     };
 
     socket.on('connect', onConnect);
@@ -49,7 +54,8 @@ export const useSocket = (roomId) => {
     socket.on('room_ready', onRoomReady);
     socket.on('match', onMatch);
     socket.on('partner_left', onPartnerLeft);
-    socket.on('partner_veto', onPartnerVeto);
+    socket.on('partner_vetoed_movie', onPartnerVetoedMovie);
+    socket.on('partner_veto_reaction', onPartnerVetoReaction);
 
     return () => {
       socket.off('connect', onConnect);
@@ -58,7 +64,8 @@ export const useSocket = (roomId) => {
       socket.off('room_ready', onRoomReady);
       socket.off('match', onMatch);
       socket.off('partner_left', onPartnerLeft);
-      socket.off('partner_veto', onPartnerVeto);
+      socket.off('partner_vetoed_movie', onPartnerVetoedMovie);
+      socket.off('partner_veto_reaction', onPartnerVetoReaction);
     };
   }, [roomId]);
 
@@ -72,5 +79,9 @@ export const useSocket = (roomId) => {
     }
   }, [roomId]);
 
-  return { isConnected, partnerConnected, matchData, emitSwipe, partnerVetoTrigger };
+  const emitVetoReaction = useCallback(() => {
+    socket.emit('send_veto_reaction', { roomId });
+  }, [roomId]);
+
+  return { isConnected, partnerConnected, matchData, emitSwipe, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction };
 };

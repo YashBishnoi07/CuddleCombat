@@ -3,20 +3,22 @@ import { useTMDB } from '../hooks/useTMDB';
 import SwipeCard from './SwipeCard';
 import MovieDetailDrawer from './MovieDetailDrawer';
 import VetoOverlay from './VetoOverlay';
+import ReactionOverlay from './ReactionOverlay';
 import styles from './SwipeDeck.module.css';
 
-const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, partnerVetoTrigger }) => {
+const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction }) => {
   const { movies, fetchMovies, loading } = useTMDB();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [hasVetoed, setHasVetoed] = useState(false);
   const [showVetoOverlay, setShowVetoOverlay] = useState(false);
+  const [showReactionOverlay, setShowReactionOverlay] = useState(false);
 
   useEffect(() => {
-    if (partnerVetoTrigger > 0) {
-      setShowVetoOverlay(true);
+    if (partnerVetoReactionTrigger > 0) {
+      setShowReactionOverlay(true);
     }
-  }, [partnerVetoTrigger]);
+  }, [partnerVetoReactionTrigger]);
 
   useEffect(() => {
     const prefsStr = localStorage.getItem(`prefs_${roomId}`);
@@ -38,6 +40,10 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, partnerVetoTrigger }) 
   };
 
   const handleSwipeRight = (movie) => {
+    if (movie.id === vetoedMovieId) {
+      setShowVetoOverlay(true);
+      return; // Stop the swipe! The trap has sprung!
+    }
     emitSwipe('right', movie.id, movie);
     setCurrentIndex(prev => prev + 1);
   };
@@ -135,10 +141,18 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, partnerVetoTrigger }) 
 
       {showVetoOverlay && (
         <VetoOverlay 
+          onRevenge={emitVetoReaction}
           onComplete={() => {
             setShowVetoOverlay(false);
-            // Optionally skip the current movie since it was vetoed by partner
             setCurrentIndex(prev => prev + 1);
+          }} 
+        />
+      )}
+
+      {showReactionOverlay && (
+        <ReactionOverlay 
+          onComplete={() => {
+            setShowReactionOverlay(false);
           }} 
         />
       )}

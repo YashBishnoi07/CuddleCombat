@@ -102,3 +102,49 @@
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
+
+.actionOverlay {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 20;
+  animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.revengeBtn {
+  background: linear-gradient(45deg, #ff3333, #ff8800);
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  padding: 16px 32px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255,50,50,0.5);
+  border: 2px solid #fff;
+  cursor: pointer;
+  animation: pulseRevenge 1.5s infinite;
+}
+
+@keyframes pulseRevenge {
+  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,50,50,0.5); }
+  50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(255,50,50,0.8); }
+  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,50,50,0.5); }
+}
+
+.skipBtn {
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}

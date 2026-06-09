@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './VetoOverlay.module.css';
 
-const VetoOverlay = ({ onComplete }) => {
+const VetoOverlay = ({ onComplete, onRevenge }) => {
   const videoRef = useRef(null);
+  const [showActions, setShowActions] = useState(false);
 
   useEffect(() => {
     // Auto-play the video when mounted
@@ -11,11 +12,11 @@ const VetoOverlay = ({ onComplete }) => {
     }
 
     const timer = setTimeout(() => {
-      onComplete();
-    }, 4500); // Overlay lasts 4.5 seconds
+      setShowActions(true);
+    }, 4000); // Show actions after video mostly finishes
 
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, []);
 
   return (
     <div className={styles.overlay}>
@@ -35,6 +36,26 @@ const VetoOverlay = ({ onComplete }) => {
         />
         <h1 className={styles.vetoText}>VETOED!</h1>
       </div>
+
+      {showActions && (
+        <div className={styles.actionOverlay}>
+          <button 
+            className={styles.revengeBtn} 
+            onClick={() => {
+              onRevenge();
+              onComplete();
+            }}
+          >
+            🔥 Send Revenge Reaction!
+          </button>
+          <button 
+            className={styles.skipBtn} 
+            onClick={onComplete}
+          >
+            Whatever...
+          </button>
+        </div>
+      )}
     </div>
   );
 };
