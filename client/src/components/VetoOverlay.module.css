@@ -122,22 +122,29 @@
 }
 
 .revengeBtn {
-  background: linear-gradient(45deg, #ff3333, #ff8800);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   padding: 16px 32px;
   border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(255,50,50,0.5);
-  border: 2px solid #fff;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  animation: pulseRevenge 1.5s infinite;
+  transition: all 0.2s ease;
+}
+
+.revengeBtn:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @keyframes pulseRevenge {
-  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,50,50,0.5); }
-  50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(255,50,50,0.8); }
-  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,50,50,0.5); }
+  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
+  50% { transform: scale(1.02); box-shadow: 0 4px 25px rgba(255, 255, 255, 0.3); }
+  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
 }
 
 .skipBtn {

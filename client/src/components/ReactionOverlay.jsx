@@ -25,7 +25,7 @@ const ReactionOverlay = ({ onComplete }) => {
           className={styles.video}
           playsInline
         />
-        <h1 className={styles.reactionText}>REVENGE!</h1>
+        <h1 className={styles.reactionText}>Whyy?? How could you : (</h1>
       </div>
     </div>
   );

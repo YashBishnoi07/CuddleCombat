@@ -34,7 +34,7 @@ const VetoOverlay = ({ onComplete, onRevenge }) => {
           className={styles.video}
           playsInline
         />
-        <h1 className={styles.vetoText}>VETOED!</h1>
+        <h1 className={styles.vetoText}>hehehehe : ))</h1>
       </div>
 
       {showActions && (
