@@ -1,0 +1,53 @@
+:root {
+  --brand-primary: #FF4458;
+  --brand-secondary: #1C1C1E;
+  --surface-card: #2A2A2D;
+  --surface-elevated: #363639;
+  --accent-gold: #F5C842;
+  --nope-blue: #4A90D9;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255,255,255,0.6);
+  --gradient-card: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.92) 100%);
+  
+  --font-display: 'Playfair Display', serif;
+  --font-ui: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: #000000;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* App feels native */
+  overscroll-behavior-y: contain; /* Prevent pull to refresh */
+  touch-action: none; /* Prevent native touch lag */
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: var(--brand-secondary);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+h1, h2, h3, .display-text {
+  font-family: var(--font-display);
+}
+
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
