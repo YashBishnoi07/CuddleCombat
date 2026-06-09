@@ -6,6 +6,7 @@ export const setupRoomHandlers = (io, socket, rooms) => {
       rooms.set(roomId, {
         users: new Set(),
         swipes: {},
+        vetoes: {},
         prefs: prefs || { services: '', genres: '' }
       });
     } else if (prefs && (prefs.services || prefs.genres)) {
@@ -55,6 +56,23 @@ export const setupRoomHandlers = (io, socket, rooms) => {
 
   socket.on('swipe_left', ({ roomId, movieId }) => {
 
+  });
+
+  socket.on('swipe_veto', ({ roomId }) => {
+    const room = rooms.get(roomId);
+    if (!room) return;
+
+    // Check if the user has already used their veto
+    if (room.vetoes[socket.id]) return;
+
+    // Mark as used
+    room.vetoes[socket.id] = true;
+
+    // Broadcast the dramatic veto to the partner
+    const otherUsers = Array.from(room.users).filter(id => id !== socket.id);
+    if (otherUsers.length > 0) {
+      io.to(otherUsers[0]).emit('partner_veto');
+    }
   });
   
   socket.on('disconnecting', () => {

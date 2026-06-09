@@ -7,7 +7,7 @@ import MatchScreen from './MatchScreen';
 
 const RoomCoordinator = () => {
   const { roomId } = useParams();
-  const { isConnected, partnerConnected, matchData, emitSwipe } = useSocket(roomId);
+  const { isConnected, partnerConnected, matchData, emitSwipe, partnerVetoTrigger } = useSocket(roomId);
 
   const [view, setView] = useState('WAITING'); // WAITING, SWIPING, MATCHED
 
@@ -32,7 +32,12 @@ const RoomCoordinator = () => {
   }
 
   return (
-    <SwipeDeck roomId={roomId} emitSwipe={emitSwipe} partnerConnected={partnerConnected} />
+    <SwipeDeck 
+      roomId={roomId} 
+      emitSwipe={emitSwipe} 
+      partnerConnected={partnerConnected} 
+      partnerVetoTrigger={partnerVetoTrigger}
+    />
   );
 };
 

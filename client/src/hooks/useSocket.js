@@ -5,6 +5,7 @@ export const useSocket = (roomId) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [partnerConnected, setPartnerConnected] = useState(false);
   const [matchData, setMatchData] = useState(null);
+  const [partnerVetoTrigger, setPartnerVetoTrigger] = useState(0);
 
   useEffect(() => {
     socket.connect();
@@ -38,12 +39,17 @@ export const useSocket = (roomId) => {
       setPartnerConnected(false);
     };
 
+    const onPartnerVeto = () => {
+      setPartnerVetoTrigger(Date.now());
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('room_prefs', onRoomPrefs);
     socket.on('room_ready', onRoomReady);
     socket.on('match', onMatch);
     socket.on('partner_left', onPartnerLeft);
+    socket.on('partner_veto', onPartnerVeto);
 
     return () => {
       socket.off('connect', onConnect);
@@ -52,16 +58,19 @@ export const useSocket = (roomId) => {
       socket.off('room_ready', onRoomReady);
       socket.off('match', onMatch);
       socket.off('partner_left', onPartnerLeft);
+      socket.off('partner_veto', onPartnerVeto);
     };
   }, [roomId]);
 
   const emitSwipe = useCallback((type, movieId, movieData) => {
     if (type === 'right') {
       socket.emit('swipe_right', { roomId, movieId, movieData });
+    } else if (type === 'veto') {
+      socket.emit('swipe_veto', { roomId, movieId });
     } else {
       socket.emit('swipe_left', { roomId, movieId });
     }
   }, [roomId]);
 
-  return { isConnected, partnerConnected, matchData, emitSwipe };
+  return { isConnected, partnerConnected, matchData, emitSwipe, partnerVetoTrigger };
 };

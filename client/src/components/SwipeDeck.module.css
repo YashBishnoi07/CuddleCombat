@@ -155,7 +155,7 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-.nopeBtn:active, .infoBtn:active, .likeBtn:active {
+.nopeBtn:active, .infoBtn:active, .likeBtn:active, .vetoBtn:active {
   transform: scale(0.9);
 }
 
@@ -173,6 +173,27 @@
   background-color: rgba(255,255,255,0.1);
   color: white;
   font-size: 18px;
+}
+
+.vetoBtn {
+  width: 52px;
+  height: 52px;
+  background-color: #2b0a0a;
+  color: #ff3333;
+  font-size: 24px;
+  border: 1px solid #ff3333;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+}
+
+.vetoBtn.used {
+  opacity: 0.3;
+  pointer-events: none;
+  filter: grayscale(1);
 }
 
 .likeBtn {

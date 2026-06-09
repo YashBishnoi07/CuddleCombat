@@ -2,12 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useTMDB } from '../hooks/useTMDB';
 import SwipeCard from './SwipeCard';
 import MovieDetailDrawer from './MovieDetailDrawer';
+import VetoOverlay from './VetoOverlay';
 import styles from './SwipeDeck.module.css';
 
-const SwipeDeck = ({ roomId, emitSwipe, partnerConnected }) => {
+const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, partnerVetoTrigger }) => {
   const { movies, fetchMovies, loading } = useTMDB();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [hasVetoed, setHasVetoed] = useState(false);
+  const [showVetoOverlay, setShowVetoOverlay] = useState(false);
+
+  useEffect(() => {
+    if (partnerVetoTrigger > 0) {
+      setShowVetoOverlay(true);
+    }
+  }, [partnerVetoTrigger]);
 
   useEffect(() => {
     const prefsStr = localStorage.getItem(`prefs_${roomId}`);
@@ -83,6 +92,17 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected }) => {
           onClick={() => currentMovie && handleSwipeLeft(currentMovie)}
         >✕</button>
         <button 
+          className={`${styles.vetoBtn} ${hasVetoed ? styles.used : ''}`}
+          onClick={() => {
+            if (!hasVetoed && currentMovie) {
+              setHasVetoed(true);
+              emitSwipe('veto', currentMovie.id, currentMovie);
+              setCurrentIndex(prev => prev + 1);
+            }
+          }}
+          disabled={hasVetoed}
+        >⛔</button>
+        <button 
           className={styles.infoBtn} 
           onClick={() => currentMovie && setSelectedMovie(currentMovie)}
         >ⓘ</button>
@@ -110,6 +130,16 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected }) => {
             handleSwipeRight(selectedMovie);
             setSelectedMovie(null);
           }}
+        />
+      )}
+
+      {showVetoOverlay && (
+        <VetoOverlay 
+          onComplete={() => {
+            setShowVetoOverlay(false);
+            // Optionally skip the current movie since it was vetoed by partner
+            setCurrentIndex(prev => prev + 1);
+          }} 
         />
       )}
     </div>
