@@ -32,7 +32,6 @@ const VetoOverlay = ({ onComplete }) => {
           src="/veto.mp4" 
           className={styles.video}
           playsInline
-          muted
         />
         <h1 className={styles.vetoText}>VETOED!</h1>
       </div>
