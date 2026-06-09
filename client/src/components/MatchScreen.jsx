@@ -71,7 +71,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
       <div className={styles.content}>
         <animated.div className={styles.badgeContainer} style={badgeSpring}>
           <div className={styles.pulseRing}></div>
-          <h1 className={styles.matchText}>🎬 It's a Match!</h1>
+          <h1 className={styles.matchText}>🎉 It's a Match!</h1>
         </animated.div>
 
         <animated.div className={styles.movieInfo} style={contentSpring}>
