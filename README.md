@@ -6,7 +6,9 @@ Anyways, to solve this issue and reduce the time of juggling between movies whic
 
 ## Screenshots
 
+![Home Screen](./screenshots/home.jpg)
 ![Swipe Screen](./screenshots/swipes.jpg)
+![Highlights](./screenshots/highlights.jpg)
 ![Movie Details Drawer](./screenshots/details.jpg)
 ![Match Screen](./screenshots/match.jpg)
 
