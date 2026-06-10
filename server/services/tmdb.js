@@ -106,7 +106,7 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
     if (combinedResults.length > 0) {
        return { results: combinedResults };
     } else {
-       if (page === 1) {
+       if (Number(page) === 1) {
          console.warn('TMDB returned empty results on page 1, using mock data.');
          return { results: MOCK_MOVIES };
        } else {
@@ -116,7 +116,7 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
     }
   } catch (error) {
     console.error('TMDB API Error:', error.message);
-    if (page === 1) {
+    if (Number(page) === 1) {
       console.warn('Falling back to mock data for page 1.');
       return { results: MOCK_MOVIES };
     }

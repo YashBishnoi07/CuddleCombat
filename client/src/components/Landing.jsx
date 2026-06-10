@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import HighlightsRow from './HighlightsRow';
 import styles from './Landing.module.css';
 
 const Landing = () => {
@@ -13,9 +14,11 @@ const Landing = () => {
       </div>
       
       <div className={styles.content}>
+        <HighlightsRow />
+        
         <div className={styles.logo}>
           <span className={styles.icon}>🥂💖</span>
-          <h1 className={styles.title}>CuddleCombat</h1>
+          <h1 className={styles.title}>FlickPick</h1>
         </div>
         <p className={styles.tagline}>Stop scrolling. Start watching.</p>
         

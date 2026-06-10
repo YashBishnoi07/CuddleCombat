@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: var(--brand-secondary);
@@ -209,7 +209,7 @@
   text-align: center;
   font-size: 13px;
   color: var(--text-secondary);
-  padding-bottom: 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
 .loadingState, .emptyState {

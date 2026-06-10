@@ -1,12 +1,25 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { animated, useSpring } from '@react-spring/web';
 import styles from './MatchScreen.module.css';
 
 const MatchScreen = ({ matchData, onKeepSwiping }) => {
+  const navigate = useNavigate();
   const movie = matchData.movieData;
 
   useEffect(() => {
+    // Save to highlights
+    const highlights = JSON.parse(localStorage.getItem('cuddle_combat_highlights') || '[]');
+    // Check if we already saved this match to prevent duplicates on re-renders
+    if (!highlights.some(h => h.id === movie.id)) {
+      const newHighlight = {
+        ...movie,
+        matchDate: new Date().toISOString()
+      };
+      localStorage.setItem('cuddle_combat_highlights', JSON.stringify([newHighlight, ...highlights]));
+    }
+
     const duration = 3000;
     const end = Date.now() + duration;
 
@@ -16,6 +29,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
         angle: 60,
         spread: 55,
         origin: { x: 0 },
+        zIndex: 9999,
         colors: ['#FF4458', '#F5C842', '#ffffff']
       });
       confetti({
@@ -23,6 +37,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
         angle: 120,
         spread: 55,
         origin: { x: 1 },
+        zIndex: 9999,
         colors: ['#FF4458', '#F5C842', '#ffffff']
       });
 
@@ -35,6 +50,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
       particleCount: 150,
       spread: 70,
       origin: { y: 0.6 },
+      zIndex: 9999,
       colors: ['#FF4458', '#F5C842', '#ffffff']
     });
 
@@ -89,6 +105,9 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
             </button>
             <button className={styles.ghostBtn} onClick={onKeepSwiping}>
               Keep Swiping
+            </button>
+            <button className={styles.homeBtn} onClick={() => navigate('/')} style={{ marginTop: '10px', background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '12px', borderRadius: '12px', cursor: 'pointer', fontSize: '14px', width: '100%' }}>
+              🏠 Return to Home
             </button>
           </div>
         </animated.div>
