@@ -104,7 +104,7 @@ const StoryViewer = ({ movies, onClose }) => {
 
         {/* Throwback Signature */}
         <div className={styles.throwbackSignature}>
-          Throwback
+          Throwback :p
         </div>
 
         {/* Poster Image */}
