@@ -1,8 +1,8 @@
-# CuddleCombat
+# FlickPick
 
 Ever had a fight or lets say more of a disagreement with your friend or partner on which movie or shows to watch together? Yeah, i can feel you not because i had fight or argument with someone, its just that my movie time got disturbed due to the fight of the other two :p 
 
-Anyways, to solve this issue and reduce the time of juggling between movies which one to watch and not, I made CuddleCombat! Yess, this web-app works like a tinder for your movie night, its so simple to use, you and your friend/partner can join a room and swipe according to your indvidiual likes dislikes, the moment you both liked the same movie or webseries,Congratss!! you got what you need to watch together.
+Anyways, to solve this issue and reduce the time of juggling between movies which one to watch and not, I made FlickPick! Yess, this web-app works like a tinder for your movie night, its so simple to use, you and your friend/partner can join a room and swipe according to your indvidiual likes dislikes, the moment you both liked the same movie or webseries,Congratss!! you got what you need to watch together.
 
 ## Screenshots
 
