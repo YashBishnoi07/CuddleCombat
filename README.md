@@ -43,23 +43,7 @@ The app ensures real-time synchronization between two devices. Once a match is c
 - **Backend:** Node.js, Express, Socket.io
 - **APIs:** TMDB API (movies and TV shows), freekeys (dynamic key generation)
 
-## Development
 
-1. **Start the backend:**
-   ```bash
-   cd server
-   npm install
-   node index.js
-   ```
-
-2. **Start the frontend:**
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   ```
-
-3. Open the URL provided by Vite (e.g., `http://localhost:5173`) in your browser.
 
 ## Contributing
 
