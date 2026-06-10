@@ -91,7 +91,11 @@ const StoryViewer = ({ movies, onClose }) => {
         <div className={styles.tapAreaRight} onClick={handleNext}></div>
 
         {/* Close Button */}
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        <button 
+          className={styles.closeBtn} 
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          onPointerDown={(e) => e.stopPropagation()}
+        >✕</button>
 
         {/* Date Pinned Top Left */}
         <div className={styles.pinnedDate}>
