@@ -52,7 +52,7 @@ const StoryViewer = ({ movies, onClose }) => {
   };
 
   return (
-    <AnimatePresence>
+    <>
       <motion.div 
         className={styles.overlay}
         initial={{ y: '100%' }}
@@ -94,7 +94,7 @@ const StoryViewer = ({ movies, onClose }) => {
         <button 
           className={styles.closeBtn} 
           onClick={(e) => { e.stopPropagation(); onClose(); }}
-          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         >✕</button>
 
         {/* Date Pinned Top Left */}
@@ -147,7 +147,7 @@ const StoryViewer = ({ movies, onClose }) => {
           </motion.p>
         </div>
       </motion.div>
-    </AnimatePresence>
+    </>
   );
 };
 

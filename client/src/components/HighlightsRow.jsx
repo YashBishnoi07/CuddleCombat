@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { AnimatePresence } from 'framer-motion';
 import StoryViewer from './StoryViewer';
 import styles from './HighlightsRow.module.css';
 
@@ -71,12 +72,15 @@ const HighlightsRow = () => {
         )}
       </div>
 
-      {activeStoryGroup && (
-        <StoryViewer 
-          movies={activeStoryGroup} 
-          onClose={() => setActiveStoryGroup(null)} 
-        />
-      )}
+      <AnimatePresence>
+        {activeStoryGroup && (
+          <StoryViewer 
+            key="story-viewer"
+            movies={activeStoryGroup} 
+            onClose={() => setActiveStoryGroup(null)} 
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };
