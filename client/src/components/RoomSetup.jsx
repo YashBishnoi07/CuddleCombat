@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import styles from './RoomSetup.module.css';
 
-const SERVICES = ['Netflix', 'Prime Video', 'Disney+ Hotstar', 'SonyLIV', 'JioCinema', 'ZEE5'];
+const SERVICES = ['Netflix', 'Prime Video', 'Disney+ Hotstar', 'SonyLIV', 'JioCinema', 'ZEE5', 'Hulu', 'Max', 'Crunchyroll'];
 const GENRES = [
   { label: 'Action', emoji: '🎬' },
   { label: 'Comedy', emoji: '😂' },

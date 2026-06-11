@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { animated, useSpring } from '@react-spring/web';
 import styles from './MatchScreen.module.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 const MatchScreen = ({ matchData, onKeepSwiping }) => {
   const navigate = useNavigate();
   const movie = matchData.movieData;
+  const [details, setDetails] = useState(null);
 
   useEffect(() => {
     // Save to highlights
@@ -55,7 +59,18 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
     });
 
     frame();
-  }, []);
+
+    const fetchDetails = async () => {
+      try {
+        const type = movie.media_type || 'movie';
+        const res = await axios.get(`${API_URL}/api/movies/${movie.id}/details?type=${type}`);
+        setDetails(res.data);
+      } catch (err) {
+        console.error('Failed to fetch match details', err);
+      }
+    };
+    fetchDetails();
+  }, [movie]);
 
   const bgSpring = useSpring({
     from: { opacity: 0 },
@@ -98,6 +113,38 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
           />
           <h2 className={styles.title}>{movie?.title}</h2>
           <p className={styles.tagline}>Tonight's movie is decided.</p>
+
+          {details?.videos?.results && details.videos.results.some(v => v.type === 'Trailer' && v.site === 'YouTube') && (
+            <div className={styles.trailerContainer} onPointerDown={(e) => e.stopPropagation()}>
+              <iframe 
+                className={styles.trailerIframe}
+                src={`https://www.youtube.com/embed/${details.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube').key}`}
+                title="Trailer"
+                frameBorder="0"
+                allowFullScreen
+              ></iframe>
+            </div>
+          )}
+
+          {details && details['watch/providers']?.results?.IN && (
+            <div className={styles.providersContainer}>
+              <h4 className={styles.providersTitle}>Where to Watch (IN):</h4>
+              <div className={styles.providerList}>
+                {(details['watch/providers'].results.IN.flatrate || []).map(p => (
+                  <img 
+                    key={p.provider_id} 
+                    src={`https://image.tmdb.org/t/p/w45${p.logo_path}`} 
+                    alt={p.provider_name} 
+                    title={p.provider_name} 
+                    className={styles.providerLogo}
+                  />
+                ))}
+                {!(details['watch/providers'].results.IN.flatrate?.length > 0) && (
+                  <span className={styles.noFree}>Not on flatrate streaming</span>
+                )}
+              </div>
+            </div>
+          )}
           
           <div className={styles.actions}>
             <button className={styles.primaryBtn} onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent((movie?.title || '') + ' trailer')}`, '_blank')}>

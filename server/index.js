@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { setupRoomHandlers } from './socket/roomHandler.js';
-import { getMovies } from './services/tmdb.js';
+import { getMovies, getMovieDetails } from './services/tmdb.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,6 +46,20 @@ app.get('/api/movies', async (req, res) => {
   } catch (error) {
     console.error('Error fetching movies:', error.message);
     res.status(500).json({ error: 'Failed to fetch movies' });
+  }
+});
+
+app.get('/api/movies/:id/details', async (req, res) => {
+  try {
+    const { type } = req.query; // 'movie' or 'tv'
+    const details = await getMovieDetails(req.params.id, type || 'movie');
+    if (!details) {
+      return res.status(404).json({ error: 'Details not found' });
+    }
+    res.json(details);
+  } catch (error) {
+    console.error('Error fetching movie details:', error.message);
+    res.status(500).json({ error: 'Failed to fetch movie details' });
   }
 });
 

@@ -134,3 +134,57 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+.trailerContainer {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  background: #000;
+}
+
+.trailerIframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+}
+
+.providersContainer {
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+}
+
+.providersTitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.providerList {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.providerLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.noFree {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+}
