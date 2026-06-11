@@ -12,19 +12,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
   const movie = matchData.movieData;
   const [details, setDetails] = useState(null);
 
-  useEffect(() => {
-    // Save to highlights
-    const highlights = JSON.parse(localStorage.getItem('cuddle_combat_highlights') || '[]');
-    // Check if we already saved this match to prevent duplicates on re-renders
-    if (!highlights.some(h => h.id === movie.id)) {
-      const newHighlight = {
-        ...movie,
-        matchDate: new Date().toISOString()
-      };
-      localStorage.setItem('cuddle_combat_highlights', JSON.stringify([newHighlight, ...highlights]));
-    }
-
-    const duration = 3000;
+  useEffect(() => {    const duration = 3000;
     const end = Date.now() + duration;
 
     const frame = () => {

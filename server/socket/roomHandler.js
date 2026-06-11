@@ -1,21 +1,22 @@
+import Match from '../models/Match.js';
+
 export const setupRoomHandlers = (io, socket, rooms) => {
-  socket.on('join_room', ({ roomId, prefs }) => {
+  socket.on('join_room', ({ roomId, prefs, userId }) => {
     socket.join(roomId);
     
     if (!rooms.has(roomId)) {
       rooms.set(roomId, {
-        users: new Set(),
+        users: new Map(),
         swipes: {},
         vetoes: {},
         prefs: prefs || { services: '', genres: '' }
       });
     } else if (prefs && (prefs.services || prefs.genres)) {
-      // If the host joins slightly later or re-joins, update the room prefs
       rooms.get(roomId).prefs = prefs;
     }
 
     const room = rooms.get(roomId);
-    room.users.add(socket.id);
+    room.users.set(socket.id, userId || null);
     if (!room.swipes[socket.id]) {
       room.swipes[socket.id] = new Set();
     }
@@ -41,11 +42,28 @@ export const setupRoomHandlers = (io, socket, rooms) => {
     }
     room.swipes[socket.id].add(movieId);
 
-    const otherUsers = Array.from(room.users).filter(id => id !== socket.id);
+    const otherUsers = Array.from(room.users.keys()).filter(id => id !== socket.id);
     if (otherUsers.length > 0) {
       const partnerId = otherUsers[0];
       if (room.swipes[partnerId] && room.swipes[partnerId].has(movieId)) {
         console.log(`MATCH found in room ${roomId} for movie ${movieId}!`);
+        
+        // Save to DB
+        const userId1 = room.users.get(socket.id);
+        const userId2 = room.users.get(partnerId);
+        
+        // Only save if we haven't saved this match recently (prevent duplicates if multiple fast swipes)
+        // For simplicity, we just save it. MongoDB handles IDs.
+        if (userId1 || userId2) {
+          Match.create({
+            roomId,
+            movieId,
+            movieData,
+            userId1: userId1 || undefined,
+            userId2: userId2 || undefined
+          }).catch(err => console.error("Error saving match:", err));
+        }
+
         io.to(roomId).emit('match', {
           movieId,
           movieData

@@ -7,10 +7,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { setupRoomHandlers } from './socket/roomHandler.js';
 import { getMovies, getMovieDetails } from './services/tmdb.js';
+import { connectDB } from './config/db.js';
+import authRoutes from './routes/auth.js';
+import matchRoutes from './routes/matches.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
+
+connectDB();
 
 const app = express();
 const server = http.createServer(app);
@@ -37,6 +42,10 @@ io.on('connection', (socket) => {
   });
 });
 
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/user/matches', matchRoutes);
 
 app.get('/api/movies', async (req, res) => {
   try {

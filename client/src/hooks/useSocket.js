@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import { socket } from '../services/socket';
+import { AuthContext } from '../context/AuthContext';
 
 export const useSocket = (roomId) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -7,6 +8,7 @@ export const useSocket = (roomId) => {
   const [matchData, setMatchData] = useState(null);
   const [vetoedMovieId, setVetoedMovieId] = useState(null);
   const [partnerVetoReactionTrigger, setPartnerVetoReactionTrigger] = useState(0);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     socket.connect();
@@ -16,7 +18,7 @@ export const useSocket = (roomId) => {
       if (roomId) {
         const prefsStr = localStorage.getItem(`prefs_${roomId}`);
         const prefs = prefsStr ? JSON.parse(prefsStr) : null;
-        socket.emit('join_room', { roomId, prefs });
+        socket.emit('join_room', { roomId, prefs, userId: user?._id });
       }
     };
 
