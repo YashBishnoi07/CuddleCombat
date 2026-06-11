@@ -7,12 +7,12 @@
   z-index: 9999;
   display: flex;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .backgroundBlur {
-  position: absolute;
+  position: fixed;
   top: -10%;
   left: -10%;
   width: 120%;
@@ -24,7 +24,7 @@
 }
 
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -41,7 +41,8 @@
   align-items: center;
   text-align: center;
   width: 100%;
-  padding: 0 24px;
+  padding: 40px 24px;
+  margin: auto 0;
 }
 
 .badgeContainer {
