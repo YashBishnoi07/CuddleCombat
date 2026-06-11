@@ -22,8 +22,8 @@ const HighlightsRow = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Match documents have `movieData` inside them
-        const allHighlights = data.map(m => m.movieData);
+        // Match documents have `movieData` inside them, but date is on the match itself
+        const allHighlights = data.map(m => ({ ...m.movieData, matchDate: m.createdAt }));
         
         const chunks = [];
         for (let i = 0; i < allHighlights.length; i += 7) {
@@ -37,35 +37,38 @@ const HighlightsRow = () => {
     fetchMatches();
   }, [user]);
 
-  if (highlightChunks.length === 0) return null;
-
   return (
     <>
       <div className={styles.container}>
         <h2 className={styles.memoriesTitle}>Memories</h2>
-        <div className={styles.scrollWrapper}>
-          {highlightChunks.map((chunk, idx) => {
-            const latestMovie = chunk[0]; // The first one in the chunk is the most recent
-            return (
-              <div 
-                key={`chunk-${idx}`} 
-                className={styles.highlightCircle}
-                onClick={() => setActiveStoryGroup(chunk)}
-              >
-                <div className={styles.imageRing}>
-                  <img 
-                    src={`https://image.tmdb.org/t/p/w200${latestMovie.poster_path}`} 
-                    alt="Memory Collection" 
-                    className={styles.posterImage}
-                  />
+        
+        {highlightChunks.length === 0 ? (
+          <p className={styles.emptyText}>No memories yet. Match with a friend to see them here!</p>
+        ) : (
+          <div className={styles.scrollWrapper}>
+            {highlightChunks.map((chunk, idx) => {
+              const latestMovie = chunk[0]; // The first one in the chunk is the most recent
+              return (
+                <div 
+                  key={`chunk-${idx}`} 
+                  className={styles.highlightCircle}
+                  onClick={() => setActiveStoryGroup(chunk)}
+                >
+                  <div className={styles.imageRing}>
+                    <img 
+                      src={`https://image.tmdb.org/t/p/w200${latestMovie.poster_path}`} 
+                      alt="Memory Collection" 
+                      className={styles.posterImage}
+                    />
+                  </div>
+                  <span className={styles.movieName}>
+                    Vol. {highlightChunks.length - idx}
+                  </span>
                 </div>
-                <span className={styles.movieName}>
-                  Vol. {highlightChunks.length - idx}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {activeStoryGroup && (

@@ -25,7 +25,7 @@ const StoryViewer = ({ movies, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       handleNext();
-    }, 10000);
+    }, 13000);
     return () => clearTimeout(timer);
   }, [currentIndex]);
 
@@ -48,7 +48,7 @@ const StoryViewer = ({ movies, onClose }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "Sometime in the past";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   };
 
   return (
@@ -78,7 +78,7 @@ const StoryViewer = ({ movies, onClose }) => {
                 className={styles.progressFill} 
                 style={{
                   width: idx < currentIndex ? '100%' : idx === currentIndex ? '100%' : '0%',
-                  animation: idx === currentIndex ? 'fillProgress 10s linear forwards' : 'none',
+                  animation: idx === currentIndex ? 'fillProgress 13s linear forwards' : 'none',
                   transition: 'width 0.1s'
                 }}
               ></div>

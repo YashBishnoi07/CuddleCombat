@@ -20,7 +20,7 @@ function App() {
       <Router>
         <TopNav />
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<ProtectedRoute><Landing /></ProtectedRoute>} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/setup" element={<ProtectedRoute><RoomSetup /></ProtectedRoute>} />
           <Route path="/room/:roomId" element={<ProtectedRoute><RoomCoordinator /></ProtectedRoute>} />
