@@ -24,6 +24,7 @@ const ReactionOverlay = ({ onComplete }) => {
           src="/reaction.mp4" 
           className={styles.video}
           playsInline
+          preload="auto"
         />
         <h1 className={styles.reactionText}>Whyy?? How could you : (</h1>
       </div>

@@ -33,6 +33,7 @@ const VetoOverlay = ({ onComplete, onRevenge }) => {
           src="/veto.mp4" 
           className={styles.video}
           playsInline
+          preload="auto"
         />
         <h1 className={styles.vetoText}>hehehe : ))</h1>
       </div>
