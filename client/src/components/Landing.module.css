@@ -108,6 +108,44 @@
   box-shadow: 0 4px 14px rgba(255, 68, 88, 0.4);
 }
 
+.primaryBtn:hover, .primary.ghostBtn:active {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(0.98);
+}
+
+.topBar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.greeting {
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.logoutBtn {
+  background: rgba(255, 68, 88, 0.2);
+  color: #ffb3b3;
+  border: 1px solid rgba(255, 68, 88, 0.3);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 68, 88, 0.4);
+}
+
 .primaryBtn:hover, .primaryBtn:active {
   transform: scale(0.98);
   filter: brightness(1.1);

@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import HighlightsRow from './HighlightsRow';
 import styles from './Landing.module.css';
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { logout, user } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth');
+  };
 
   return (
     <div className={styles.container}>
@@ -14,6 +21,10 @@ const Landing = () => {
       </div>
       
       <div className={styles.content}>
+        <div className={styles.topBar}>
+          <span className={styles.greeting}>Hi, {user?.username}</span>
+          <button className={styles.logoutBtn} onClick={handleLogout}>Log Out</button>
+        </div>
         <HighlightsRow />
         
         <div className={styles.logo}>
