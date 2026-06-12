@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import HighlightsRow from './HighlightsRow';
 import styles from './Landing.module.css';
 
 const Landing = () => {
@@ -25,7 +24,6 @@ const Landing = () => {
           <span className={styles.greeting}>Hi, {user?.username}</span>
           <button className={styles.logoutBtn} onClick={handleLogout}>Log Out</button>
         </div>
-        <HighlightsRow />
         
         <div className={styles.logo}>
           <span className={styles.icon}>🥂💖</span>

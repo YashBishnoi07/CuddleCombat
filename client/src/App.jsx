@@ -5,7 +5,10 @@ import Landing from './components/Landing';
 import RoomSetup from './components/RoomSetup';
 import RoomCoordinator from './components/RoomCoordinator';
 import Auth from './components/Auth';
-import TopNav from './components/TopNav';
+import BottomNav from './components/BottomNav';
+import MatchesTab from './components/MatchesTab';
+import ChatTab from './components/ChatTab';
+import ProfileTab from './components/ProfileTab';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
@@ -18,13 +21,16 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <TopNav />
         <Routes>
           <Route path="/" element={<ProtectedRoute><Landing /></ProtectedRoute>} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/setup" element={<ProtectedRoute><RoomSetup /></ProtectedRoute>} />
           <Route path="/room/:roomId" element={<ProtectedRoute><RoomCoordinator /></ProtectedRoute>} />
+          <Route path="/matches" element={<ProtectedRoute><MatchesTab /></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><ChatTab /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfileTab /></ProtectedRoute>} />
         </Routes>
+        <BottomNav />
       </Router>
     </AuthProvider>
   );

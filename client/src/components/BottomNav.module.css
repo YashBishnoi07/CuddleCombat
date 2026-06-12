@@ -1,0 +1,57 @@
+.navContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+  padding-bottom: 20px; /* Safe area for modern phones */
+}
+
+.navBtn {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 60px;
+  transition: all 0.2s ease;
+}
+
+.navBtn.active {
+  color: var(--brand-primary);
+}
+
+.icon {
+  font-size: 24px;
+  opacity: 0.7;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navBtn.active .icon {
+  opacity: 1;
+  transform: translateY(-4px) scale(1.1);
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navBtn.active .label {
+  opacity: 1;
+  transform: translateY(0);
+}
