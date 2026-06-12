@@ -17,10 +17,10 @@ const BottomNav = () => {
   }
 
   const tabs = [
-    { path: '/', label: 'Home', icon: '🍿' },
-    { path: '/matches', label: 'Matches', icon: '❤️' },
-    { path: '/chat', label: 'Chat', icon: '💬' },
-    { path: '/profile', label: 'Profile', icon: '👤' }
+    { path: '/', label: 'Home' },
+    { path: '/matches', label: 'Matches' },
+    { path: '/chat', label: 'Chat' },
+    { path: '/profile', label: 'Profile' }
   ];
 
   return (
@@ -33,7 +33,6 @@ const BottomNav = () => {
             className={`${styles.navBtn} ${isActive ? styles.active : ''}`}
             onClick={() => navigate(tab.path)}
           >
-            <span className={styles.icon}>{tab.icon}</span>
             <span className={styles.label}>{tab.label}</span>
           </button>
         );
