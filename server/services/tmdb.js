@@ -11,7 +11,7 @@ const MOCK_MOVIES = [
   { id: 106, title: 'Spider-Man: No Way Home', poster_path: '/1g0dhYtq4irTY1R80vFAe85k0qJ.jpg', release_date: '2021-12-15', vote_average: 8.0, overview: 'Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero.', media_type: 'movie' }
 ];
 
-export const getMovies = async ({ services, genres, page = 1 }) => {
+export const getMovies = async ({ services, genres, decade, runtime, page = 1 }) => {
   let apiKey = process.env.TMDB_API_KEY;
   
   try {
@@ -76,6 +76,19 @@ export const getMovies = async ({ services, genres, page = 1 }) => {
     if (genreIds) {
       params.with_genres = genreIds;
     }
+  }
+
+  if (decade && decade !== 'all') {
+    const startYear = parseInt(decade, 10);
+    const endYear = startYear + 9;
+    params['primary_release_date.gte'] = `${startYear}-01-01`;
+    params['primary_release_date.lte'] = `${endYear}-12-31`;
+    params['first_air_date.gte'] = `${startYear}-01-01`;
+    params['first_air_date.lte'] = `${endYear}-12-31`;
+  }
+
+  if (runtime && runtime !== 'all') {
+    params['with_runtime.lte'] = parseInt(runtime, 10);
   }
 
   try {

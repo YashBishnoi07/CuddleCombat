@@ -1,4 +1,5 @@
 import Match from '../models/Match.js';
+import Like from '../models/Like.js';
 
 export const setupRoomHandlers = (io, socket, rooms) => {
   socket.on('join_room', ({ roomId, prefs, userId }) => {
@@ -41,6 +42,16 @@ export const setupRoomHandlers = (io, socket, rooms) => {
         room.swipes[socket.id] = new Set();
     }
     room.swipes[socket.id].add(movieId);
+
+    // Save Like to DB
+    const userId1 = room.users.get(socket.id);
+    if (userId1) {
+      Like.findOneAndUpdate(
+        { userId: userId1, movieId },
+        { movieId, movieData },
+        { upsert: true, new: true }
+      ).catch(err => console.error("Error saving like:", err));
+    }
 
     const otherUsers = Array.from(room.users.keys()).filter(id => id !== socket.id);
     if (otherUsers.length > 0) {

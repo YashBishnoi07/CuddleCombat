@@ -13,6 +13,7 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partner
   const [hasVetoed, setHasVetoed] = useState(false);
   const [showVetoOverlay, setShowVetoOverlay] = useState(false);
   const [showReactionOverlay, setShowReactionOverlay] = useState(false);
+  const [prefs, setPrefs] = useState({ services: '', genres: '' });
 
   useEffect(() => {
     if (partnerVetoReactionTrigger > 0) {
@@ -22,15 +23,16 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partner
 
   useEffect(() => {
     const prefsStr = localStorage.getItem(`prefs_${roomId}`);
-    const prefs = prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' };
-    fetchMovies(prefs, 1);
+    const loadedPrefs = prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' };
+    setPrefs(loadedPrefs);
+    fetchMovies(loadedPrefs, 1);
   }, [roomId, fetchMovies]);
 
   useEffect(() => {
     if (!loading && hasMore && movies.length > 0 && currentIndex > movies.length - 5) {
       const prefsStr = localStorage.getItem(`prefs_${roomId}`);
-      const prefs = prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' };
-      fetchMovies(prefs);
+      const loadedPrefs = prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' };
+      fetchMovies(loadedPrefs);
     }
   }, [currentIndex, movies.length, roomId, fetchMovies, loading, hasMore]);
 
@@ -81,6 +83,7 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partner
                 style={style}
                 onSwipeLeft={handleSwipeLeft}
                 onSwipeRight={handleSwipeRight}
+                blindSwipe={prefs.blindSwipe}
               />
             );
           })

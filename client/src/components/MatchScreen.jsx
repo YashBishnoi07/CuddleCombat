@@ -11,6 +11,7 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
   const navigate = useNavigate();
   const movie = matchData.movieData;
   const [details, setDetails] = useState(null);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {    const duration = 3000;
     const end = Date.now() + duration;
@@ -59,6 +60,19 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
     };
     fetchDetails();
   }, [movie]);
+
+  const handleSaveToWatchlist = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      await axios.post(`${API_URL}/api/user/watchlist`, { movieData: movie }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSaved(true);
+    } catch (err) {
+      console.error('Failed to save to watchlist', err);
+    }
+  };
 
   const bgSpring = useSpring({
     from: { opacity: 0 },
@@ -137,6 +151,13 @@ const MatchScreen = ({ matchData, onKeepSwiping }) => {
           <div className={styles.actions}>
             <button className={styles.primaryBtn} onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent((movie?.title || '') + ' trailer')}`, '_blank')}>
               ▶ Watch Trailer
+            </button>
+            <button 
+              className={styles.ghostBtn} 
+              onClick={handleSaveToWatchlist}
+              disabled={saved}
+            >
+              {saved ? '✅ Saved to Watchlist' : '➕ Save to Watchlist'}
             </button>
             <button className={styles.ghostBtn} onClick={onKeepSwiping}>
               Keep Swiping

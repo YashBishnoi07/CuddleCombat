@@ -6,10 +6,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { setupRoomHandlers } from './socket/roomHandler.js';
+import { setupChatHandlers } from './socket/chatHandler.js';
 import { getMovies, getMovieDetails } from './services/tmdb.js';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/auth.js';
-import matchRoutes from './routes/matches.js';
+import userRoutes from './routes/userRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
+import aiMatchmakerRoutes from './routes/aiMatchmaker.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +39,7 @@ const rooms = new Map();
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
   setupRoomHandlers(io, socket, rooms);
+  setupChatHandlers(io, socket);
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
@@ -45,12 +49,14 @@ io.on('connection', (socket) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/user/matches', matchRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/ai-matchmaker', aiMatchmakerRoutes);
 
 app.get('/api/movies', async (req, res) => {
   try {
-    const { services, genres, page } = req.query;
-    const movies = await getMovies({ services, genres, page });
+    const { services, genres, decade, runtime, page } = req.query;
+    const movies = await getMovies({ services, genres, decade, runtime, page });
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error.message);
