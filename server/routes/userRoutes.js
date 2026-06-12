@@ -44,6 +44,7 @@ router.post('/watchlist', protect, async (req, res) => {
     
     if (!exists) {
       user.watchlist.push(movieData);
+      user.markModified('watchlist');
       await user.save();
     }
     res.json(user.watchlist);

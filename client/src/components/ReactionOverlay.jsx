@@ -18,11 +18,22 @@ const ReactionOverlay = ({ onComplete }) => {
 
   return (
     <div className={styles.overlay}>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <filter id="green-screen">
+          <feColorMatrix type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            1.5 -2 1.5 0 1
+          " />
+        </filter>
+      </svg>
       <div className={styles.videoContainer}>
         <video 
           ref={videoRef}
           src="/reaction.mp4" 
           className={styles.video}
+          style={{ filter: 'url(#green-screen)' }}
           playsInline
           preload="auto"
         />

@@ -20,6 +20,16 @@ const VetoOverlay = ({ onComplete, onRevenge }) => {
 
   return (
     <div className={styles.overlay}>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <filter id="green-screen">
+          <feColorMatrix type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            1.5 -2 1.5 0 1
+          " />
+        </filter>
+      </svg>
       <div className={styles.shatterContainer}>
         {/* Shards for CSS animation */}
         {[...Array(6)].map((_, i) => (
@@ -32,6 +42,7 @@ const VetoOverlay = ({ onComplete, onRevenge }) => {
           ref={videoRef}
           src="/veto.mp4" 
           className={styles.video}
+          style={{ filter: 'url(#green-screen)' }}
           playsInline
           preload="auto"
         />
@@ -47,7 +58,7 @@ const VetoOverlay = ({ onComplete, onRevenge }) => {
               onComplete();
             }}
           >
-            🔥 Send Revenge Reaction!
+            🔥 Send Reaction!
           </button>
           <button 
             className={styles.skipBtn} 
