@@ -63,4 +63,16 @@ router.get('/watchlist', protect, async (req, res) => {
   }
 });
 
+// Update avatar
+router.put('/avatar', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.avatar = req.body.avatar;
+    await user.save();
+    res.json({ avatar: user.avatar });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

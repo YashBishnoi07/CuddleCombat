@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
   watchlist: {
     type: Array,
     default: []
+  },
+  avatar: {
+    type: String,
+    default: '🦊'
   }
 }, { timestamps: true });
 

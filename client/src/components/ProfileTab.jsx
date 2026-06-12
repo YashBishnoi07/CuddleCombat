@@ -6,9 +6,11 @@ import styles from './ProfileTab.module.css';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const ProfileTab = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [likes, setLikes] = useState([]);
   const [matchesCount, setMatchesCount] = useState(0);
+  const [showAvatarSelect, setShowAvatarSelect] = useState(false);
+  const avatars = ['🦊', '🐼', '🦁', '🐯', '🐰', '🐸', '🐵', '🦄', '🐶', '🐱'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,12 +54,44 @@ const ProfileTab = () => {
     }
   }
 
+  const handleAvatarChange = async (avatar) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_URL}/api/user/avatar`, { avatar }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser({ ...user, avatar });
+      setShowAvatarSelect(false);
+    } catch (err) {
+      console.error('Failed to change avatar', err);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.avatar}>{user?.username?.charAt(0).toUpperCase()}</div>
+        <div className={styles.avatar} onClick={() => setShowAvatarSelect(!showAvatarSelect)}>
+          {user?.avatar || user?.username?.charAt(0).toUpperCase() || '👤'}
+        </div>
         <h2>{user?.username}</h2>
       </div>
+
+      {showAvatarSelect && (
+        <div className={styles.avatarSelectSection}>
+          <h3 className={styles.sectionTitle}>Choose your Avatar</h3>
+          <div className={styles.avatarGrid}>
+            {avatars.map(a => (
+              <div 
+                key={a} 
+                className={`${styles.avatarOption} ${user?.avatar === a ? styles.selectedAvatar : ''}`}
+                onClick={() => handleAvatarChange(a)}
+              >
+                {a}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Trophies</h3>

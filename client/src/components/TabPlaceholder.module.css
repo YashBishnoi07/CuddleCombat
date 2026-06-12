@@ -4,9 +4,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding-bottom: 80px; /* Space for BottomNav */
+  padding-top: 20px;
   color: white;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 h1 {

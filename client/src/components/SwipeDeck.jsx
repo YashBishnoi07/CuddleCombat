@@ -83,7 +83,6 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partner
                 style={style}
                 onSwipeLeft={handleSwipeLeft}
                 onSwipeRight={handleSwipeRight}
-                blindSwipe={prefs.blindSwipe}
               />
             );
           })

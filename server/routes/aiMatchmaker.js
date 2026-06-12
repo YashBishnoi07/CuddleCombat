@@ -23,7 +23,12 @@ router.post('/', protect, async (req, res) => {
     
     User prompt: ${prompt}`;
 
-    const result = await model.generateContent(systemInstruction);
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: systemInstruction }] }],
+      generationConfig: {
+        responseMimeType: 'application/json'
+      }
+    });
     let text = result.response.text();
     text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 

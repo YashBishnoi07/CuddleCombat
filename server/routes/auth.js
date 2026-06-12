@@ -30,6 +30,7 @@ router.post('/register', async (req, res) => {
       res.status(201).json({
         _id: user._id,
         username: user.username,
+        avatar: user.avatar,
         token: generateToken(user._id),
       });
     } else {
@@ -51,6 +52,7 @@ router.post('/login', async (req, res) => {
       res.json({
         _id: user._id,
         username: user.username,
+        avatar: user.avatar,
         token: generateToken(user._id),
       });
     } else {
@@ -66,6 +68,7 @@ router.get('/me', protect, async (req, res) => {
   res.json({
     _id: req.user._id,
     username: req.user.username,
+    avatar: req.user.avatar,
   });
 });
 

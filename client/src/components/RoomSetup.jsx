@@ -19,7 +19,6 @@ const RoomSetup = () => {
   const [selectedGenres, setSelectedGenres] = useState(new Set());
   const [decade, setDecade] = useState('all');
   const [runtime, setRuntime] = useState('all');
-  const [blindSwipe, setBlindSwipe] = useState(false);
   const [roomCode, setRoomCode] = useState('');
 
   const toggleService = (s) => {
@@ -45,8 +44,7 @@ const RoomSetup = () => {
       services: Array.from(selectedServices).join(','),
       genres: Array.from(selectedGenres).join(','),
       decade,
-      runtime,
-      blindSwipe
+      runtime
     };
     localStorage.setItem(`prefs_${code}`, JSON.stringify(prefs));
 
@@ -121,19 +119,6 @@ const RoomSetup = () => {
               </select>
             </div>
           </div>
-
-          <label className={styles.toggleRow}>
-            <div className={styles.toggleInfo}>
-              <span className={styles.toggleLabel}>Blind Swipe Mode</span>
-              <span className={styles.toggleDesc}>Hide posters & titles. Judge by plot only.</span>
-            </div>
-            <input 
-              type="checkbox" 
-              checked={blindSwipe} 
-              onChange={e => setBlindSwipe(e.target.checked)} 
-              className={styles.checkbox}
-            />
-          </label>
         </div>
 
         {roomCode ? (
