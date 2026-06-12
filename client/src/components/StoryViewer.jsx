@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './StoryViewer.module.css';
 
@@ -51,7 +52,7 @@ const StoryViewer = ({ movies, onClose }) => {
     return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   };
 
-  return (
+  return createPortal(
     <>
       <motion.div 
         className={styles.overlay}
@@ -147,7 +148,8 @@ const StoryViewer = ({ movies, onClose }) => {
           </motion.p>
         </div>
       </motion.div>
-    </>
+    </>,
+    document.body
   );
 };
 

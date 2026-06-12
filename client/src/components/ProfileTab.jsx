@@ -10,6 +10,7 @@ const ProfileTab = () => {
   const [likes, setLikes] = useState([]);
   const [matchesCount, setMatchesCount] = useState(0);
   const [showAvatarSelect, setShowAvatarSelect] = useState(false);
+  const fileInputRef = React.useRef(null);
   const avatars = ['🦊', '🐼', '🦁', '🐯', '🐰', '🐸', '🐵', '🦄', '🐶', '🐱'];
 
   useEffect(() => {
@@ -67,18 +68,54 @@ const ProfileTab = () => {
     }
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Check file size (max 2MB to avoid huge DB payloads)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Please choose an image under 2MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      handleAvatarChange(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const renderAvatarContent = () => {
+    if (user?.avatar?.startsWith('data:image')) {
+      return <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />;
+    }
+    return user?.avatar || user?.username?.charAt(0).toUpperCase() || '👤';
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.avatar} onClick={() => setShowAvatarSelect(!showAvatarSelect)}>
-          {user?.avatar || user?.username?.charAt(0).toUpperCase() || '👤'}
+          {renderAvatarContent()}
         </div>
         <h2>{user?.username}</h2>
       </div>
 
       {showAvatarSelect && (
         <div className={styles.avatarSelectSection}>
-          <h3 className={styles.sectionTitle}>Choose your Avatar</h3>
+          <div className={styles.avatarHeader}>
+            <h3 className={styles.sectionTitle}>Choose your Avatar</h3>
+            <button className={styles.uploadBtn} onClick={() => fileInputRef.current.click()}>
+              Upload Photo
+            </button>
+            <input 
+              type="file" 
+              accept="image/*" 
+              ref={fileInputRef} 
+              style={{ display: 'none' }} 
+              onChange={handleFileUpload} 
+            />
+          </div>
           <div className={styles.avatarGrid}>
             {avatars.map(a => (
               <div 

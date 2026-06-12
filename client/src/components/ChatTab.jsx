@@ -61,10 +61,12 @@ const ChatTab = () => {
     setInputText('');
   };
 
+  const quickEmojis = ['😂', '😍', '😭', '🔥', '👍', '🍿', '🎬', '👻'];
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Global Chat 🌎</h2>
+        <h2 style={{ textAlign: 'left', width: '100%', fontSize: '24px' }}>Your Chat</h2>
       </div>
 
       <div className={styles.chatArea}>
@@ -82,18 +84,27 @@ const ChatTab = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSend} className={styles.inputArea}>
-        <input 
-          type="text" 
-          placeholder="Type a message..." 
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          className={styles.input}
-        />
-        <button type="submit" className={styles.sendBtn} disabled={!inputText.trim()}>
-          ➤
-        </button>
-      </form>
+      <div className={styles.inputContainer}>
+        <div className={styles.emojiRow}>
+          {quickEmojis.map(e => (
+            <span key={e} onClick={() => setInputText(prev => prev + e)} className={styles.quickEmoji}>
+              {e}
+            </span>
+          ))}
+        </div>
+        <form onSubmit={handleSend} className={styles.inputArea}>
+          <input 
+            type="text" 
+            placeholder="Type a message..." 
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            className={styles.input}
+          />
+          <button type="submit" className={styles.sendBtn} disabled={!inputText.trim()}>
+            ➤
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
