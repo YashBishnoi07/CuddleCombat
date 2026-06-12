@@ -10,7 +10,7 @@ router.post('/', protect, async (req, res) => {
     if (!prompt) return res.status(400).json({ message: 'Prompt is required' });
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const systemInstruction = `You are a movie recommendation engine API. You take a user's natural language vibe or prompt and convert it strictly into JSON format that matches our TMDB filtering schema.
     Output ONLY raw JSON with these exact keys. No markdown blocks, no intro, no outro:

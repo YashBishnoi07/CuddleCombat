@@ -6,7 +6,7 @@ import VetoOverlay from './VetoOverlay';
 import ReactionOverlay from './ReactionOverlay';
 import styles from './SwipeDeck.module.css';
 
-const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction }) => {
+const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction, roomPrefs }) => {
   const { movies, fetchMovies, loading, hasMore } = useTMDB();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -23,10 +23,10 @@ const SwipeDeck = ({ roomId, emitSwipe, partnerConnected, vetoedMovieId, partner
 
   useEffect(() => {
     const prefsStr = localStorage.getItem(`prefs_${roomId}`);
-    const loadedPrefs = prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' };
+    const loadedPrefs = roomPrefs || (prefsStr ? JSON.parse(prefsStr) : { services: '', genres: '' });
     setPrefs(loadedPrefs);
     fetchMovies(loadedPrefs, 1);
-  }, [roomId, fetchMovies]);
+  }, [roomId, fetchMovies, roomPrefs]);
 
   useEffect(() => {
     if (!loading && hasMore && movies.length > 0 && currentIndex > movies.length - 5) {

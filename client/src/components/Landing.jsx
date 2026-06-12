@@ -47,7 +47,7 @@ const Landing = () => {
       
       <div className={styles.content}>
         <div className={styles.topBar}>
-          <span className={styles.greeting}>Hi, {user?.username}</span>
+          <span className={styles.greeting}>Hi, {user?.username}!</span>
           <button className={styles.logoutBtn} onClick={handleLogout}>Log Out</button>
         </div>
         

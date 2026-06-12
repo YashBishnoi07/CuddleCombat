@@ -8,6 +8,7 @@ export const useSocket = (roomId) => {
   const [matchData, setMatchData] = useState(null);
   const [vetoedMovieId, setVetoedMovieId] = useState(null);
   const [partnerVetoReactionTrigger, setPartnerVetoReactionTrigger] = useState(0);
+  const [roomPrefs, setRoomPrefs] = useState(null);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export const useSocket = (roomId) => {
     const onRoomPrefs = (prefs) => {
       if (prefs) {
         localStorage.setItem(`prefs_${roomId}`, JSON.stringify(prefs));
+        setRoomPrefs(prefs);
       }
     };
 
@@ -85,5 +87,5 @@ export const useSocket = (roomId) => {
     socket.emit('send_veto_reaction', { roomId });
   }, [roomId]);
 
-  return { isConnected, partnerConnected, matchData, emitSwipe, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction };
+  return { isConnected, partnerConnected, matchData, emitSwipe, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction, roomPrefs };
 };

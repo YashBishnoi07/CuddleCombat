@@ -7,7 +7,7 @@ import MatchScreen from './MatchScreen';
 
 const RoomCoordinator = () => {
   const { roomId } = useParams();
-  const { isConnected, partnerConnected, matchData, emitSwipe, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction } = useSocket(roomId);
+  const { isConnected, partnerConnected, matchData, emitSwipe, vetoedMovieId, partnerVetoReactionTrigger, emitVetoReaction, roomPrefs } = useSocket(roomId);
 
   const [view, setView] = useState('WAITING'); // WAITING, SWIPING, MATCHED
 
@@ -39,6 +39,7 @@ const RoomCoordinator = () => {
       vetoedMovieId={vetoedMovieId}
       partnerVetoReactionTrigger={partnerVetoReactionTrigger}
       emitVetoReaction={emitVetoReaction}
+      roomPrefs={roomPrefs}
     />
   );
 };
