@@ -16,6 +16,7 @@ const ChatTab = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [showProfileModal, setShowProfileModal] = useState(null);
+  const [lastMessages, setLastMessages] = useState({});
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -49,6 +50,19 @@ const ChatTab = () => {
         });
         
         setFriends(Array.from(uniqueFriendsMap.values()));
+        
+        // Fetch last messages
+        const roomIds = Array.from(uniqueFriendsMap.values()).map(f => f.chatRoomId);
+        if (roomIds.length > 0) {
+          try {
+            const msgsRes = await axios.post(`${API_URL}/api/chat/last`, { rooms: roomIds }, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setLastMessages(msgsRes.data);
+          } catch (e) {
+            console.error('Failed to fetch last messages', e);
+          }
+        }
       } catch (err) {
         console.error('Failed to fetch friends', err);
       }
@@ -138,7 +152,19 @@ const ChatTab = () => {
                   {renderAvatar(friend)}
                 </div>
                 <div className={styles.friendInfo}>
-                  <span className={styles.friendName}>{friend.username}</span>
+                  <div className={styles.friendNameRow}>
+                    <span className={styles.friendName}>{friend.username}</span>
+                    {lastMessages[friend.chatRoomId] && (
+                      <span className={styles.lastMessageTime}>
+                        {new Date(lastMessages[friend.chatRoomId].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    )}
+                  </div>
+                  {lastMessages[friend.chatRoomId] && (
+                    <span className={styles.lastMessageText}>
+                      {lastMessages[friend.chatRoomId].text}
+                    </span>
+                  )}
                 </div>
               </div>
             ))

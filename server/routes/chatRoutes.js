@@ -20,4 +20,21 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
+router.post('/last', protect, async (req, res) => {
+  try {
+    const { rooms } = req.body;
+    if (!rooms || !Array.isArray(rooms)) return res.json({});
+
+    const lastMessages = {};
+    await Promise.all(rooms.map(async (room) => {
+      const msg = await Message.findOne({ chatRoomId: room }).sort({ createdAt: -1 }).select('text createdAt');
+      if (msg) lastMessages[room] = msg;
+    }));
+
+    res.json(lastMessages);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
