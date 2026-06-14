@@ -226,8 +226,6 @@ const ProfileTab = () => {
           </div>
         )}
       </div>
-
-      </div>
     </div>
   );
 };
