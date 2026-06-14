@@ -24,13 +24,29 @@ const HighlightsRow = () => {
         });
         
         // Match documents have `movieData` inside them, but date is on the match itself
-        const allHighlights = data.map(m => ({ ...m.movieData, matchDate: m.createdAt }));
+        const matches = data;
         
-        const chunks = [];
-        for (let i = 0; i < allHighlights.length; i += 7) {
-          chunks.push(allHighlights.slice(i, i + 7));
-        }
-        setHighlightChunks(chunks);
+        // Group by partner
+        const grouped = {};
+        
+        matches.forEach(m => {
+          // Identify the partner (the other userId)
+          let partner = null;
+          if (m.userId1 && m.userId1._id !== user._id) partner = m.userId1;
+          else if (m.userId2 && m.userId2._id !== user._id) partner = m.userId2;
+          
+          if (!partner) return; // Skip matches that aren't paired correctly or are single user
+          
+          if (!grouped[partner._id]) {
+            grouped[partner._id] = {
+              partner,
+              movies: []
+            };
+          }
+          grouped[partner._id].movies.push({ ...m.movieData, matchDate: m.createdAt });
+        });
+
+        setHighlightChunks(Object.values(grouped));
       } catch (err) {
         console.error('Failed to fetch matches', err);
       }
@@ -47,23 +63,28 @@ const HighlightsRow = () => {
           <p className={styles.emptyText}>No memories yet. Match with a friend to see them here!</p>
         ) : (
           <div className={styles.scrollWrapper}>
-            {highlightChunks.map((chunk, idx) => {
-              const latestMovie = chunk[0]; // The first one in the chunk is the most recent
+            {highlightChunks.map((group) => {
+              const partner = group.partner;
+              const movies = group.movies;
+              
+              const renderAvatar = () => {
+                if (partner?.avatar?.startsWith('data:image')) {
+                  return <img src={partner.avatar} alt={partner.username} className={styles.partnerAvatarImage} />;
+                }
+                return <span className={styles.emojiAvatar}>{partner?.avatar || '👤'}</span>;
+              };
+
               return (
                 <div 
-                  key={`chunk-${idx}`} 
+                  key={`group-${partner._id}`} 
                   className={styles.highlightCircle}
-                  onClick={() => setActiveStoryGroup(chunk)}
+                  onClick={() => setActiveStoryGroup(movies)}
                 >
                   <div className={styles.imageRing}>
-                    <img 
-                      src={`https://image.tmdb.org/t/p/w200${latestMovie.poster_path}`} 
-                      alt="Memory Collection" 
-                      className={styles.posterImage}
-                    />
+                    {renderAvatar()}
                   </div>
                   <span className={styles.movieName}>
-                    Vol. {highlightChunks.length - idx}
+                    {partner.username}
                   </span>
                 </div>
               );

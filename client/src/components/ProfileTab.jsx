@@ -10,6 +10,7 @@ const ProfileTab = () => {
   const [likes, setLikes] = useState([]);
   const [matchesCount, setMatchesCount] = useState(0);
   const [showAvatarSelect, setShowAvatarSelect] = useState(false);
+  const [showTopPicksSelect, setShowTopPicksSelect] = useState(false);
   const fileInputRef = React.useRef(null);
   const avatars = ['🦊', '🐼', '🦁', '🐯', '🐰', '🐸', '🐵', '🦄', '🐶', '🐱'];
 
@@ -85,6 +86,27 @@ const ProfileTab = () => {
     reader.readAsDataURL(file);
   };
 
+  const handleTopPickChange = async (movie) => {
+    let newPicks = [...(user.topPicks || [])];
+    const exists = newPicks.find(p => p.id === movie.id);
+    if (exists) {
+      newPicks = newPicks.filter(p => p.id !== movie.id);
+    } else {
+      if (newPicks.length >= 3) return; // Max 3
+      newPicks.push(movie);
+    }
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_URL}/api/user/top-picks`, { topPicks: newPicks }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser({ ...user, topPicks: newPicks });
+    } catch (err) {
+      console.error('Failed to change top picks', err);
+    }
+  };
+
   const renderAvatarContent = () => {
     if (user?.avatar?.startsWith('data:image')) {
       return <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />;
@@ -129,6 +151,56 @@ const ProfileTab = () => {
           </div>
         </div>
       )}
+
+      <div className={styles.section}>
+        <div className={styles.topPicksHeader}>
+          <h3 className={styles.sectionTitle}>Top Picks</h3>
+          {user?.topPicks?.length > 0 && (
+            <button className={styles.uploadBtn} onClick={() => setShowTopPicksSelect(!showTopPicksSelect)}>
+              {showTopPicksSelect ? 'Done' : 'Edit'}
+            </button>
+          )}
+        </div>
+
+        {(!user?.topPicks || user?.topPicks?.length === 0) && !showTopPicksSelect ? (
+          <div className={styles.emptyTopPicks}>
+            <p className={styles.emptyText}>Show off your favorite movies!</p>
+            <button className={styles.uploadBtn} onClick={() => setShowTopPicksSelect(true)}>Select Top Picks</button>
+          </div>
+        ) : !showTopPicksSelect ? (
+          <div className={styles.topPicksGrid}>
+            {user.topPicks.map(movie => (
+              <div key={`pick-${movie.id}`} className={styles.topPickCard}>
+                <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {showTopPicksSelect && (
+          <div className={styles.topPicksSelectionArea}>
+            <p className={styles.emptyText} style={{ marginBottom: '12px' }}>
+              Select up to 3 movies from your likes ({user?.topPicks?.length || 0}/3)
+            </p>
+            <div className={styles.likesGrid}>
+              {likes.map(like => {
+                const movie = like.movieData;
+                const isSelected = user?.topPicks?.some(p => p.id === movie.id);
+                return (
+                  <div 
+                    key={`select-${movie.id}`} 
+                    className={`${styles.likeSelectCard} ${isSelected ? styles.selectedPick : ''}`}
+                    onClick={() => handleTopPickChange(movie)}
+                  >
+                    <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
+                    {isSelected && <div className={styles.checkOverlay}>✓</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Trophies</h3>

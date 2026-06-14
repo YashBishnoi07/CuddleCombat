@@ -6,11 +6,13 @@ const router = express.Router();
 
 router.get('/', protect, async (req, res) => {
   try {
-    // Get last 50 messages
-    const messages = await Message.find()
+    const { room } = req.query;
+    if (!room) return res.json([]);
+
+    const messages = await Message.find({ chatRoomId: room })
       .sort({ createdAt: -1 })
       .limit(50)
-      .populate('user', 'username');
+      .populate('user', 'username avatar');
     
     res.json(messages.reverse());
   } catch (error) {

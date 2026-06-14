@@ -180,3 +180,86 @@
   height: 100%;
   object-fit: cover;
 }
+
+.topPicksHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.emptyTopPicks {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.topPicksGrid {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.topPickCard {
+  width: 100px;
+  height: 150px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.topPickCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.likesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.likeSelectCard {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 2/3;
+  transition: transform 0.2s;
+}
+
+.likeSelectCard:active {
+  transform: scale(0.95);
+}
+
+.likeSelectCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.selectedPick {
+  border: 2px solid var(--brand-primary);
+}
+
+.checkOverlay {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--brand-primary);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}

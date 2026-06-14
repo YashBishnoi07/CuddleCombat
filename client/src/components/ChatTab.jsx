@@ -2,28 +2,66 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
+import UserProfileModal from './UserProfileModal';
 import styles from './ChatTab.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const ChatTab = () => {
   const { user } = useContext(AuthContext);
+  const [friends, setFriends] = useState([]);
+  const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
+  const [showProfileModal, setShowProfileModal] = useState(null);
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const quickEmojis = ['😂', '😍', '😭', '🔥', '👍', '🍿', '🎬', '👻'];
 
   useEffect(() => {
-    // Fetch initial messages
+    // Fetch unique friends from matches
+    const fetchFriends = async () => {
+      const token = localStorage.getItem('token');
+      if (!token || !user) return;
+      try {
+        const { data } = await axios.get(`${API_URL}/api/user/matches`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        const uniqueFriendsMap = new Map();
+        data.forEach(m => {
+          let partner = null;
+          if (m.userId1 && m.userId1._id !== user._id) partner = m.userId1;
+          else if (m.userId2 && m.userId2._id !== user._id) partner = m.userId2;
+          
+          if (partner && !uniqueFriendsMap.has(partner._id)) {
+            // Generate deterministic room ID
+            const roomId = [user._id, partner._id].sort().join('_');
+            uniqueFriendsMap.set(partner._id, { ...partner, chatRoomId: roomId });
+          }
+        });
+        
+        setFriends(Array.from(uniqueFriendsMap.values()));
+      } catch (err) {
+        console.error('Failed to fetch friends', err);
+      }
+    };
+    fetchFriends();
+  }, [user]);
+
+  useEffect(() => {
+    if (!activeChat) return;
+
+    // Connect to specific room
+    socketRef.current = io(API_URL);
+    socketRef.current.emit('join_direct_chat', { roomId: activeChat.chatRoomId });
+
     const fetchMessages = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const res = await axios.get(`${API_URL}/api/chat`, {
+        const res = await axios.get(`${API_URL}/api/chat?room=${activeChat.chatRoomId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessages(res.data);
@@ -34,39 +72,85 @@ const ChatTab = () => {
     };
     fetchMessages();
 
-    // Connect to global socket
-    socketRef.current = io(API_URL);
-    socketRef.current.emit('join_global_chat');
-
-    socketRef.current.on('receive_global_message', (msg) => {
-      setMessages(prev => [...prev, msg]);
-      setTimeout(scrollToBottom, 100);
+    socketRef.current.on('receive_direct_message', (msg) => {
+      if (msg.chatRoomId === activeChat.chatRoomId) {
+        setMessages(prev => [...prev, msg]);
+        setTimeout(scrollToBottom, 100);
+      }
     });
 
     return () => {
       socketRef.current.disconnect();
     };
-  }, []);
+  }, [activeChat]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || !activeChat) return;
 
-    socketRef.current.emit('send_global_message', {
+    socketRef.current.emit('send_direct_message', {
       userId: user._id,
       username: user.username,
-      text: inputText
+      avatar: user.avatar,
+      text: inputText,
+      roomId: activeChat.chatRoomId
     });
 
     setInputText('');
   };
 
-  const quickEmojis = ['😂', '😍', '😭', '🔥', '👍', '🍿', '🎬', '👻'];
+  const renderAvatar = (u) => {
+    if (u?.avatar?.startsWith('data:image')) {
+      return <img src={u.avatar} alt="Avatar" className={styles.avatarImage} />;
+    }
+    return <span className={styles.avatarEmoji}>{u?.avatar || '👤'}</span>;
+  };
+
+  if (!activeChat) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h2 style={{ textAlign: 'left', width: '100%', fontSize: '24px' }}>Your Chats</h2>
+        </div>
+        <div className={styles.friendsList}>
+          {friends.length === 0 ? (
+            <p className={styles.emptyText}>Match with friends to start chatting!</p>
+          ) : (
+            friends.map(friend => (
+              <div 
+                key={friend._id} 
+                className={styles.friendRow}
+                onClick={() => setActiveChat(friend)}
+              >
+                <div className={styles.friendAvatarWrapper}>
+                  {renderAvatar(friend)}
+                </div>
+                <div className={styles.friendInfo}>
+                  <span className={styles.friendName}>{friend.username}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2 style={{ textAlign: 'left', width: '100%', fontSize: '24px' }}>Your Chat</h2>
+      <div className={styles.activeHeader}>
+        <button className={styles.backBtn} onClick={() => setActiveChat(null)}>←</button>
+        <div 
+          className={styles.activeAvatarWrapper}
+          onClick={() => setShowProfileModal(activeChat._id)}
+        >
+          {renderAvatar(activeChat)}
+        </div>
+        <h2 onClick={() => setShowProfileModal(activeChat._id)}>{activeChat.username}</h2>
       </div>
 
       <div className={styles.chatArea}>
@@ -95,7 +179,7 @@ const ChatTab = () => {
         <form onSubmit={handleSend} className={styles.inputArea}>
           <input 
             type="text" 
-            placeholder="Type a message..." 
+            placeholder="Message..." 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             className={styles.input}
@@ -105,6 +189,13 @@ const ChatTab = () => {
           </button>
         </form>
       </div>
+
+      {showProfileModal && (
+        <UserProfileModal 
+          userId={showProfileModal} 
+          onClose={() => setShowProfileModal(null)} 
+        />
+      )}
     </div>
   );
 };

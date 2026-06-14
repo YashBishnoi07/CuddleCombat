@@ -1,25 +1,27 @@
 import Message from '../models/Message.js';
 
 export const setupChatHandlers = (io, socket) => {
-  socket.on('join_global_chat', () => {
-    socket.join('global_chat');
+  socket.on('join_direct_chat', ({ roomId }) => {
+    socket.join(roomId);
   });
 
-  socket.on('send_global_message', async (data) => {
+  socket.on('send_direct_message', async (data) => {
     try {
-      const { userId, username, text } = data;
+      const { userId, username, text, roomId, avatar } = data;
       
       const newMessage = await Message.create({
         user: userId,
         username,
-        text
+        text,
+        chatRoomId: roomId
       });
 
-      io.to('global_chat').emit('receive_global_message', {
+      io.to(roomId).emit('receive_direct_message', {
         _id: newMessage._id,
-        user: { _id: userId, username },
+        user: { _id: userId, username, avatar },
         username,
         text,
+        chatRoomId: roomId,
         createdAt: newMessage.createdAt
       });
     } catch (err) {

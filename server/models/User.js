@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: '🦊'
+  },
+  topPicks: {
+    type: Array,
+    default: []
   }
 }, { timestamps: true });
 

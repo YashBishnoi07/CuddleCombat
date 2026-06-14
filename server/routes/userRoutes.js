@@ -13,7 +13,10 @@ router.get('/matches', protect, async (req, res) => {
     // Find matches where user is either userId1 or userId2
     const matches = await Match.find({
       $or: [{ userId1: userId }, { userId2: userId }]
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .populate('userId1', 'username avatar topPicks')
+      .populate('userId2', 'username avatar topPicks');
 
     res.json(matches);
   } catch (error) {
@@ -70,6 +73,40 @@ router.put('/avatar', protect, async (req, res) => {
     user.avatar = req.body.avatar;
     await user.save();
     res.json({ avatar: user.avatar });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update top picks
+router.put('/top-picks', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.topPicks = req.body.topPicks || [];
+    await user.save();
+    res.json(user.topPicks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get public profile
+router.get('/:id/profile', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('username avatar topPicks createdAt');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    // Calculate simple stats (likes count, match count)
+    const likesCount = await Like.countDocuments({ userId: user._id });
+    const matchesCount = await Match.countDocuments({
+      $or: [{ userId1: user._id }, { userId2: user._id }]
+    });
+
+    res.json({
+      ...user.toObject(),
+      likesCount,
+      matchesCount
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
