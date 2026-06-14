@@ -114,7 +114,8 @@ const ChatTab = () => {
     if (u?.avatar?.startsWith('data:image')) {
       return <img src={u.avatar} alt="Avatar" className={styles.avatarImage} />;
     }
-    return <span className={styles.avatarEmoji}>{u?.avatar || '👤'}</span>;
+    const fallback = u?.avatar === '🦊' ? '👤' : (u?.avatar || '👤');
+    return <span className={styles.avatarEmoji}>{fallback}</span>;
   };
 
   if (!activeChat) {

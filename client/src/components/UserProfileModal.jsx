@@ -31,7 +31,8 @@ const UserProfileModal = ({ userId, onClose }) => {
     if (profile?.avatar?.startsWith('data:image')) {
       return <img src={profile.avatar} alt="Profile" className={styles.avatarImage} />;
     }
-    return profile?.avatar || profile?.username?.charAt(0).toUpperCase() || '👤';
+    const fallback = profile?.avatar === '🦊' ? '👤' : (profile?.avatar || profile?.username?.charAt(0).toUpperCase() || '👤');
+    return fallback;
   };
 
   const renderTrophies = () => {

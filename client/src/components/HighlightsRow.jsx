@@ -71,7 +71,8 @@ const HighlightsRow = () => {
                 if (partner?.avatar?.startsWith('data:image')) {
                   return <img src={partner.avatar} alt={partner.username} className={styles.partnerAvatarImage} />;
                 }
-                return <span className={styles.emojiAvatar}>{partner?.avatar || '👤'}</span>;
+                const fallback = partner?.avatar === '🦊' ? '👤' : (partner?.avatar || '👤');
+                return <span className={styles.emojiAvatar}>{fallback}</span>;
               };
 
               return (
