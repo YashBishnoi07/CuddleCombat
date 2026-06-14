@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import Landing from './components/Landing';
 import RoomSetup from './components/RoomSetup';
 import RoomCoordinator from './components/RoomCoordinator';
@@ -20,18 +21,20 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<ProtectedRoute><Landing /></ProtectedRoute>} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/setup" element={<ProtectedRoute><RoomSetup /></ProtectedRoute>} />
-          <Route path="/room/:roomId" element={<ProtectedRoute><RoomCoordinator /></ProtectedRoute>} />
-          <Route path="/matches" element={<ProtectedRoute><MatchesTab /></ProtectedRoute>} />
-          <Route path="/chat" element={<ProtectedRoute><ChatTab /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><ProfileTab /></ProtectedRoute>} />
-        </Routes>
-        <BottomNav />
-      </Router>
+      <NotificationProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<ProtectedRoute><Landing /></ProtectedRoute>} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/setup" element={<ProtectedRoute><RoomSetup /></ProtectedRoute>} />
+            <Route path="/room/:roomId" element={<ProtectedRoute><RoomCoordinator /></ProtectedRoute>} />
+            <Route path="/matches" element={<ProtectedRoute><MatchesTab /></ProtectedRoute>} />
+            <Route path="/chat" element={<ProtectedRoute><ChatTab /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfileTab /></ProtectedRoute>} />
+          </Routes>
+          <BottomNav />
+        </Router>
+      </NotificationProvider>
     </AuthProvider>
   );
 }

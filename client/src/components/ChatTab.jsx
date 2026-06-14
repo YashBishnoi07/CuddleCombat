@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
+import { NotificationContext } from '../context/NotificationContext';
 import UserProfileModal from './UserProfileModal';
 import styles from './ChatTab.module.css';
 
@@ -9,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const ChatTab = () => {
   const { user } = useContext(AuthContext);
+  const { clearUnread } = useContext(NotificationContext) || {};
   const [friends, setFriends] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -18,6 +20,10 @@ const ChatTab = () => {
   const messagesEndRef = useRef(null);
 
   const quickEmojis = ['😂', '😍', '😭', '🔥', '👍', '🍿', '🎬', '👻'];
+
+  useEffect(() => {
+    if (clearUnread) clearUnread();
+  }, [clearUnread]);
 
   useEffect(() => {
     // Fetch unique friends from matches
@@ -97,7 +103,8 @@ const ChatTab = () => {
       username: user.username,
       avatar: user.avatar,
       text: inputText,
-      roomId: activeChat.chatRoomId
+      roomId: activeChat.chatRoomId,
+      recipientId: activeChat._id
     });
 
     setInputText('');

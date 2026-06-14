@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const userExists = await User.findOne({ username });
+    const userExists = await User.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }

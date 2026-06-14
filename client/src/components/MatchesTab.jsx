@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import HighlightsRow from './HighlightsRow';
-import styles from './TabPlaceholder.module.css';
+import StoryViewer from './StoryViewer';
+import styles from './MatchesTab.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const MatchesTab = () => {
   const [watchlist, setWatchlist] = useState([]);
   const [likes, setLikes] = useState([]);
+  const [expandedSection, setExpandedSection] = useState(null); // 'watchlist' or 'likes'
+  const [viewingMovie, setViewingMovie] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +31,38 @@ const MatchesTab = () => {
     fetchData();
   }, []);
 
+  const renderGrid = (title, items, isLikes = false) => (
+    <motion.div 
+      className={styles.fullScreenOverlay}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
+    >
+      <div className={styles.fullScreenHeader}>
+        <button className={styles.backBtn} onClick={() => setExpandedSection(null)}>←</button>
+        <h2>{title}</h2>
+      </div>
+      <div className={styles.fullScreenGrid}>
+        {items.map((item, idx) => {
+          const movie = isLikes ? item.movieData : item;
+          return (
+            <motion.div 
+              key={`grid-${movie.id}-${idx}`} 
+              className={styles.gridItem}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setViewingMovie(movie)}
+            >
+              <img 
+                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} 
+                alt={movie.title} 
+              />
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+
   return (
     <motion.div 
       className={styles.container}
@@ -37,61 +72,40 @@ const MatchesTab = () => {
     >
       <HighlightsRow />
       
-      {watchlist.length === 0 ? (
-        <div className={styles.emptyWatchlist}>
-          <h1>Watchlist</h1>
-          <p>Your saved matches will appear here...</p>
-        </div>
-      ) : (
+      <div className={styles.bannersContainer}>
         <motion.div 
-          className={styles.watchlistSection}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          className={styles.sectionBanner}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setExpandedSection('watchlist')}
         >
-          <h2>Your Watchlist</h2>
-          <div className={styles.watchlistGrid}>
-            {watchlist.map((movie, idx) => (
-              <motion.div 
-                key={`watch-${movie.id}-${idx}`} 
-                className={styles.watchlistItem}
-                whileHover={{ scale: 1.05 }}
-              >
-                <img 
-                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} 
-                  alt={movie.title} 
-                />
-              </motion.div>
-            ))}
-          </div>
+          <span>Your Watchlist ({watchlist.length})</span>
+          <span>›</span>
         </motion.div>
-      )}
 
-      {likes.length > 0 && (
         <motion.div 
-          className={styles.watchlistSection} 
-          style={{ marginTop: '24px' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          className={styles.sectionBanner}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setExpandedSection('likes')}
         >
-          <h2>Movies You Liked</h2>
-          <div className={styles.watchlistGrid}>
-            {likes.map((like, idx) => (
-              <motion.div 
-                key={`like-${like._id || idx}`} 
-                className={styles.watchlistItem}
-                whileHover={{ scale: 1.05 }}
-              >
-                <img 
-                  src={`https://image.tmdb.org/t/p/w200${like.movieData?.poster_path}`} 
-                  alt="Liked Movie" 
-                />
-              </motion.div>
-            ))}
-          </div>
+          <span>Movies You Liked ({likes.length})</span>
+          <span>›</span>
         </motion.div>
-      )}
+      </div>
+
+      <AnimatePresence>
+        {expandedSection === 'watchlist' && renderGrid('Your Watchlist', watchlist, false)}
+        {expandedSection === 'likes' && renderGrid('Movies You Liked', likes, true)}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {viewingMovie && (
+          <StoryViewer 
+            movies={[{ ...viewingMovie, matchDate: new Date() }]} 
+            onClose={() => setViewingMovie(null)} 
+          />
+        )}
+      </AnimatePresence>
+
     </motion.div>
   );
 };

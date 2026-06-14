@@ -39,6 +39,13 @@ const ProfileTab = () => {
   if (matchesCount >= 10) trophies.push({ id: 2, icon: '🏆', title: 'Cinephile', desc: 'Matched 10 times' });
   if (likes.length >= 20) trophies.push({ id: 3, icon: '🍿', title: 'Swipe Master', desc: 'Liked 20+ movies' });
   
+  const GENRE_MAP = {
+    28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime',
+    99: 'Documentary', 18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History',
+    27: 'Horror', 10402: 'Music', 9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi',
+    10770: 'TV Movie', 53: 'Thriller', 10752: 'War', 37: 'Western'
+  };
+
   // Find favorite genre based on likes
   if (likes.length > 0) {
     const genreCounts = {};
@@ -51,8 +58,9 @@ const ProfileTab = () => {
     const topGenreId = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b);
     
     // Add a trophy for having a strong genre preference if they have enough likes
-    if (genreCounts[topGenreId] > 5) {
-      trophies.push({ id: 4, icon: '🎭', title: 'Genre Specialist', desc: 'You have a clear favorite vibe' });
+    if (genreCounts[topGenreId] >= 100) {
+      const genreName = GENRE_MAP[topGenreId] || 'Cinephile';
+      trophies.push({ id: 4, icon: '🎭', title: `${genreName} Specialist`, desc: `You really love ${genreName} movies!` });
     }
   }
 
@@ -219,20 +227,6 @@ const ProfileTab = () => {
         )}
       </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Movies You Liked</h3>
-        <p className={styles.statsText}>{likes.length} total right-swipes</p>
-        <div className={styles.likedGrid}>
-          {likes.map(like => (
-            <div key={like._id} className={styles.likedCard}>
-              <img 
-                src={`https://image.tmdb.org/t/p/w200${like.movieData.poster_path}`} 
-                alt="Movie poster" 
-                className={styles.poster}
-              />
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

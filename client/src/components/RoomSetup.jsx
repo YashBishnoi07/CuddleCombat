@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
+import { motion } from 'framer-motion';
 import styles from './RoomSetup.module.css';
 
 const SERVICES = ['Netflix', 'Prime Video', 'Disney+ Hotstar', 'SonyLIV', 'JioCinema', 'ZEE5', 'Hulu', 'Max', 'Crunchyroll'];
@@ -59,9 +60,17 @@ const RoomSetup = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <motion.div 
+      className={styles.container}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className={styles.sheet}>
-        <h2 className={styles.title}>Room Setup</h2>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', marginRight: '16px', cursor: 'pointer' }}>←</button>
+          <h2 className={styles.title} style={{ margin: 0 }}>Room Setup</h2>
+        </div>
         
         <div className={styles.section}>
           <h3 className={styles.subtitle}>What are you watching on?</h3>
@@ -127,12 +136,12 @@ const RoomSetup = () => {
             <div className={styles.codePill}>{roomCode}</div>
           </div>
         ) : (
-          <button className={styles.cta} onClick={handleGenerate}>
-            Generate Room Link
+          <button className={styles.generateBtn} onClick={handleGenerate}>
+            Generate Room Code
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
