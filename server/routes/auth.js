@@ -31,6 +31,7 @@ router.post('/register', async (req, res) => {
         _id: user._id,
         username: user.username,
         avatar: user.avatar,
+        topPicks: user.topPicks,
         token: generateToken(user._id),
       });
     } else {
@@ -53,6 +54,7 @@ router.post('/login', async (req, res) => {
         _id: user._id,
         username: user.username,
         avatar: user.avatar,
+        topPicks: user.topPicks,
         token: generateToken(user._id),
       });
     } else {
@@ -69,6 +71,7 @@ router.get('/me', protect, async (req, res) => {
     _id: req.user._id,
     username: req.user.username,
     avatar: req.user.avatar,
+    topPicks: req.user.topPicks,
   });
 });
 
